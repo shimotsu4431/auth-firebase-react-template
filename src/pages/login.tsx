@@ -20,7 +20,8 @@ const Login: FC = () => {
       await auth.signInWithEmailAndPassword(email, password)
       router.push('/')
     } catch (err) {
-      alert(err.message)
+      console.error(err)
+      alert("存在しないユーザです")
     }
   }
 
