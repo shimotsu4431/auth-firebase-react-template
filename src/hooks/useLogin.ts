@@ -1,13 +1,22 @@
 import router from "next/router";
-import { useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 
 import { auth } from '../utils/firebase'
 
 type useLoginReturnType = {
   logOut: () => Promise<void>
+  setCurrentUser: Dispatch<SetStateAction<object>>
 }
 
 const useLogin = (): useLoginReturnType => {
+  const [currentUser, setCurrentUser] = useState<null | object>(null)
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      user ? setCurrentUser(user) : router.push('/login')
+    })
+  }, [])
+
   const logOut = useCallback(async() => {
       try {
         await auth.signOut()
@@ -17,7 +26,7 @@ const useLogin = (): useLoginReturnType => {
       }
   },[])
 
-  return { logOut }
+  return { logOut, setCurrentUser }
 }
 
 export default useLogin

@@ -1,24 +1,19 @@
-import { useEffect, FC, useState } from 'react'
+import { useEffect, FC, useState, useContext } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 
-import { auth } from '../utils/firebase'
 import useLogin from '../hooks/useLogin'
+import { AuthContext } from '../auth/AuthProvider'
 
 const Home: FC = (props: any) => {
-  const router = useRouter()
-  const [currentUser, setCurrentUser] = useState<null | object>(null)
   const { logOut } = useLogin()
+  const user = useContext(AuthContext)
 
-  useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      user ? setCurrentUser(user) : router.push('/login')
-    })
-  }, [])
+  console.log("user.currentUser", user.currentUser)
 
   return (
     <div>
-      <pre>{currentUser && JSON.stringify(currentUser, null, 4)}</pre>
+      <pre>{user && user.currentUser && JSON.stringify(user.currentUser, null, 4)}</pre>
       <button onClick={logOut}>Logout</button>
     </div>
   )
